@@ -11,6 +11,8 @@ const lista = document.getElementById("lista");
 const textoVacio = document.getElementById("vacio");
 const rachaNumero = document.getElementById("racha-numero");
 const rachaTexto = document.getElementById("racha-texto");
+const diasMes = document.getElementById("dias-mes");
+const diasMesTexto = document.getElementById("dias-mes-texto");
 
 // Lista de sesiones. Cada sesión es: { id, fecha: "AAAA-MM-DD", tema, minutos }
 let sesiones = cargarSesiones();
@@ -41,6 +43,12 @@ function diaAnterior(texto) {
   const fecha = textoAFecha(texto);
   fecha.setDate(fecha.getDate() - 1);
   return fechaATexto(fecha);
+}
+
+// Devuelve el día 1 del mes actual como "AAAA-MM-DD"
+function inicioDeMes() {
+  const hoy = new Date();
+  return fechaATexto(new Date(hoy.getFullYear(), hoy.getMonth(), 1));
 }
 
 // Muestra la fecha de forma bonita, por ejemplo: "jueves, 2 de octubre de 2026"
@@ -96,6 +104,25 @@ function calcularRacha() {
   return racha;
 }
 
+// ---------- Días estudiados este mes ----------
+
+function diasEstudiadosEsteMes() {
+  const inicio = inicioDeMes();
+  const hoy = hoyEnTexto();
+
+  // Un Set guarda cada fecha una sola vez:
+  // varias sesiones el mismo día cuentan como un solo día.
+  const dias = new Set();
+  sesiones.forEach(function (sesion) {
+    // Las fechas "AAAA-MM-DD" se pueden comparar como texto.
+    // Solo cuentan los días entre el 1 del mes y hoy (las fechas futuras no suman).
+    if (sesion.fecha >= inicio && sesion.fecha <= hoy) {
+      dias.add(sesion.fecha);
+    }
+  });
+  return dias.size;
+}
+
 // ---------- Mostrar en pantalla ----------
 
 function mostrarRacha() {
@@ -143,8 +170,15 @@ function mostrarLista() {
   });
 }
 
+function mostrarDiasMes() {
+  const dias = diasEstudiadosEsteMes();
+  diasMes.textContent = dias;
+  diasMesTexto.textContent = dias === 1 ? "día" : "días";
+}
+
 function mostrarTodo() {
   mostrarRacha();
+  mostrarDiasMes();
   mostrarLista();
 }
 

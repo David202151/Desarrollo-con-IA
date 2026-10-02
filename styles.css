@@ -1,13 +1,28 @@
-/* Colores principales */
+/*
+  Idea del diseño: un cuaderno de cuadrícula.
+  - El fondo es papel cuadriculado.
+  - La racha está escrita en grande con "boli rojo".
+  - El formulario es una ficha pegada en el cuaderno.
+  - La lista es una hoja con su margen rojo.
+*/
+
+/* Colores y tipografías */
 :root {
-  --fondo: #f4f5f7;
-  --tarjeta: #ffffff;
-  --texto: #1f2937;
-  --texto-suave: #6b7280;
-  --borde: #e5e7eb;
-  --principal: #f97316;
-  --principal-oscuro: #ea580c;
-  --error: #dc2626;
+  --papel: #f6f8fb;
+  --cuadricula: #dfe7f1;
+  --blanco: #ffffff;
+  --tinta: #1e2b4d;
+  --tinta-suave: #5a6785;
+  --boli-azul: #2347c5;
+  --boli-azul-oscuro: #18348f;
+  --boli-rojo: #d33a2c;
+
+  /* Bahnschrift viene con Windows; el resto son alternativas parecidas */
+  --letra-numeros: "Bahnschrift", "DIN Alternate", "Roboto Condensed", "Arial Narrow", sans-serif;
+  /* Letra con serifa para lo que escribe el usuario, como en un diario */
+  --letra-diario: "Charter", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+
+  --cuadro: 24px;
 }
 
 * {
@@ -16,118 +31,186 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: var(--fondo);
-  color: var(--texto);
+  font-family: var(--letra-numeros);
+  font-size: 1rem;
   line-height: 1.5;
+  color: var(--tinta);
+  background-color: var(--papel);
+  /* Papel cuadriculado: una línea horizontal y otra vertical que se repiten */
+  background-image:
+    linear-gradient(var(--cuadricula) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cuadricula) 1px, transparent 1px);
+  background-size: var(--cuadro) var(--cuadro);
 }
 
 .contenedor {
   max-width: 560px;
   margin: 0 auto;
-  padding: 24px 16px 48px;
+  padding: 32px 16px 64px;
 }
 
 h1 {
-  text-align: center;
-  font-size: 1.75rem;
-  margin: 0 0 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-stretch: 75%;
+  letter-spacing: 0.01em;
+  margin: 0;
 }
 
 h2 {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
+  font-weight: 600;
   margin: 0 0 16px;
 }
 
-/* Tarjetas */
-.tarjeta {
-  background: var(--tarjeta);
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
+/* ---------- Racha ---------- */
 
-/* Racha */
+/* Número enorme a la izquierda; llama y texto a su derecha */
 .racha {
-  text-align: center;
-  background: linear-gradient(135deg, #fff7ed, #ffedd5);
-}
-
-.racha-icono {
-  font-size: 3rem;
-  display: block;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr 1fr;
+  column-gap: 16px;
+  align-items: center;
+  margin: 24px 0 12px;
 }
 
 .racha-numero {
-  font-size: 4rem;
-  font-weight: 800;
+  grid-row: 1 / 3;
   margin: 0;
+  font-size: clamp(6rem, 30vw, 9.5rem);
+  font-weight: 700;
+  font-stretch: 75%;
+  line-height: 0.85;
+  font-variant-numeric: tabular-nums;
+  color: var(--boli-rojo);
+}
+
+.racha-icono {
+  align-self: end;
+  font-size: 2.25rem;
   line-height: 1;
-  color: var(--principal-oscuro);
 }
 
 .racha-texto {
-  margin: 8px 0 0;
-  color: var(--texto-suave);
+  align-self: start;
+  margin: 4px 0 0;
+  font-size: 1.25rem;
   font-weight: 600;
 }
 
-/* Formulario */
+/* ---------- Días de este mes ---------- */
+
+/* Más discreto que la racha: azul en vez de rojo y mucho más pequeño */
+.mes {
+  margin: 0 0 32px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--tinta-suave);
+}
+
+.mes-numero {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-stretch: 75%;
+  font-variant-numeric: tabular-nums;
+  color: var(--boli-azul);
+}
+
+/* ---------- Formulario (ficha) ---------- */
+
+.ficha {
+  background: var(--blanco);
+  border: 2px solid var(--tinta);
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 32px;
+}
+
+.campo {
+  margin-bottom: 16px;
+}
+
+/* Fecha y minutos en dos columnas */
+.fila {
+  display: grid;
+  /* minmax(0, 1fr) evita que el campo de fecha ensanche la columna en el móvil */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
 label {
   display: block;
+  font-size: 0.875rem;
   font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 6px;
+  color: var(--tinta-suave);
+  margin-bottom: 4px;
 }
 
 input {
   width: 100%;
-  padding: 12px;
-  font-size: 1rem;
+  padding: 10px 12px;
   font-family: inherit;
-  border: 1px solid var(--borde);
-  border-radius: 10px;
-  margin-bottom: 16px;
-  background: #fff;
-  color: var(--texto);
+  font-size: 1rem;
+  color: var(--tinta);
+  background: var(--blanco);
+  border: 1.5px solid var(--cuadricula);
+  border-radius: 4px;
 }
 
-input:focus {
-  outline: none;
-  border-color: var(--principal);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+/* El tema se escribe con la letra del diario */
+#tema {
+  font-family: var(--letra-diario);
+  font-size: 1.125rem;
+}
+
+input:hover {
+  border-color: var(--tinta-suave);
+}
+
+input:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--boli-azul);
+  outline-offset: 2px;
+  border-color: var(--boli-azul);
 }
 
 button {
   width: 100%;
-  padding: 14px;
-  font-size: 1rem;
-  font-weight: 700;
+  padding: 12px;
   font-family: inherit;
-  color: #fff;
-  background: var(--principal);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--blanco);
+  background: var(--boli-azul);
   border: none;
-  border-radius: 10px;
+  border-radius: 4px;
   cursor: pointer;
 }
 
 button:hover {
-  background: var(--principal-oscuro);
+  background: var(--boli-azul-oscuro);
 }
 
 .error {
-  color: var(--error);
-  font-size: 0.9rem;
   margin: -4px 0 12px;
-  min-height: 1em;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--boli-rojo);
 }
 
 .error:empty {
   display: none;
 }
 
-/* Lista de sesiones */
+/* ---------- Lista de sesiones (hoja con margen rojo) ---------- */
+
+.hoja {
+  background: var(--blanco);
+  border-left: 3px solid var(--boli-rojo);
+  padding: 20px 20px 8px;
+}
+
 .lista {
   list-style: none;
   margin: 0;
@@ -137,10 +220,10 @@ button:hover {
 .sesion {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+  align-items: baseline;
+  gap: 16px;
   padding: 12px 0;
-  border-bottom: 1px solid var(--borde);
+  border-bottom: 1px dashed var(--cuadricula);
 }
 
 .sesion:last-child {
@@ -148,28 +231,30 @@ button:hover {
 }
 
 .sesion-tema {
-  font-weight: 600;
   margin: 0;
+  font-family: var(--letra-diario);
+  font-size: 1.125rem;
+  line-height: 1.35;
   word-break: break-word;
 }
 
 .sesion-fecha {
-  font-size: 0.85rem;
-  color: var(--texto-suave);
-  margin: 0;
+  margin: 2px 0 0;
+  font-size: 0.875rem;
+  color: var(--tinta-suave);
 }
 
 .sesion-minutos {
   flex-shrink: 0;
+  font-size: 1.375rem;
   font-weight: 700;
-  color: var(--principal-oscuro);
-  background: #fff7ed;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.9rem;
+  font-stretch: 75%;
+  font-variant-numeric: tabular-nums;
+  color: var(--boli-azul);
 }
 
 .vacio {
-  color: var(--texto-suave);
-  margin: 0;
+  margin: 0 0 12px;
+  font-family: var(--letra-diario);
+  color: var(--tinta-suave);
 }
