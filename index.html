@@ -11,17 +11,29 @@
     <h1>Diario de Estudio</h1>
 
     <!-- Racha actual -->
-    <section class="racha" aria-label="Racha actual">
-      <span class="racha-icono" aria-hidden="true">🔥</span>
+    <section class="racha" id="racha" aria-label="Racha actual">
+      <!-- Llama dibujada en SVG; la animación está en styles.css -->
+      <svg class="racha-icono" viewBox="0 0 24 32" aria-hidden="true">
+        <path class="llama-exterior" d="M12 1c1 6 8 10 8 19a8 8 0 0 1-16 0c0-4 2-7 4-9 0 3 1 5 3 6 0-6 0-11 1-16z"/>
+        <path class="llama-interior" d="M12 15c1 4 4 6 4 10a4 4 0 0 1-8 0c0-3 2-5 4-10z"/>
+      </svg>
       <p class="racha-numero" id="racha-numero">0</p>
       <p class="racha-texto" id="racha-texto">días seguidos</p>
     </section>
 
-    <!-- Días estudiados este mes -->
-    <p class="mes">
-      <span class="mes-numero" id="dias-mes">0</span>
-      <span id="dias-mes-texto">días</span> este mes
-    </p>
+    <!-- Días estudiados este mes y mejor racha -->
+    <div class="resumen">
+      <p class="mes">
+        <span class="mes-numero" id="dias-mes">0</span>
+        <span id="dias-mes-texto">días</span> este mes
+      </p>
+      <!-- Oculta hasta que haya alguna sesión (app.js la muestra) -->
+      <p class="mes" id="mejor-racha-linea" hidden>
+        Mejor racha:
+        <span class="mes-numero" id="mejor-racha">0</span>
+        <span id="mejor-racha-texto">días</span>
+      </p>
+    </div>
 
     <!-- Formulario para registrar una sesión -->
     <section class="ficha">
@@ -40,7 +52,7 @@
           </div>
           <div class="campo">
             <label for="minutos">Minutos</label>
-            <input type="number" id="minutos" min="1" step="1" placeholder="Ej.: 30" required>
+            <input type="number" id="minutos" min="1" max="1440" step="1" placeholder="Ej.: 30" required>
           </div>
         </div>
 
@@ -48,6 +60,25 @@
 
         <button type="submit">Guardar sesión</button>
       </form>
+    </section>
+
+    <!-- Mapa de calor: días estudiados en las últimas 13 semanas (specs/001-mapa-de-calor) -->
+    <section class="mapa" aria-labelledby="mapa-titulo">
+      <h2 id="mapa-titulo">Últimas 13 semanas</h2>
+      <!-- Con zoom grande solo se desplaza el mapa, no la página -->
+      <div class="mapa-desplazable">
+        <!-- app.js crea aquí las filas y los días -->
+        <div class="mapa-rejilla" id="mapa" role="grid"></div>
+      </div>
+      <!-- Resumen del período, o la fecha y los minutos del día consultado -->
+      <p class="mapa-info" id="mapa-info"></p>
+      <ul class="mapa-leyenda" aria-label="Leyenda: minutos estudiados por día">
+        <li><span class="mapa-muestra nivel-0" aria-hidden="true"></span>0</li>
+        <li><span class="mapa-muestra nivel-1" aria-hidden="true"></span>1–29</li>
+        <li><span class="mapa-muestra nivel-2" aria-hidden="true"></span>30–59</li>
+        <li><span class="mapa-muestra nivel-3" aria-hidden="true"></span>60–119</li>
+        <li><span class="mapa-muestra nivel-4" aria-hidden="true"></span>120+</li>
+      </ul>
     </section>
 
     <!-- Lista de sesiones -->
@@ -58,6 +89,8 @@
     </section>
   </main>
 
+  <!-- logica.js primero: app.js usa sus funciones -->
+  <script src="logica.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
